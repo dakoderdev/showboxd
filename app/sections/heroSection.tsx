@@ -62,7 +62,7 @@ export default function Header({ randomShows }: HeroSectionProps) {
           <Image src={randomShows[2]?.img_vertical ?? "/placeholder.png"} alt="Hero show image" width={256} height={384} className="w-full h-full object-cover" />
         </Link>
       </div>
-      <div className="absolute inset-x-4 -bottom-5 h-12 gradient-rainbow rounded-xl blur-3xl"></div>
+      <div className="absolute inset-x-4 -bottom-5 h-12 gradient-rainbow opacity-85 rounded-xl blur-3xl"></div>
     </header>
   );
 }

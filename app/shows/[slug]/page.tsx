@@ -1,7 +1,9 @@
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import Image from "next/image";
-import ShowDetailAside from "../../components/showDetailAside";
+import ShowDetailAside from "@/components/showDetailAside";
+import Tab from "@/components/tab";
+import Reviews from "@/components/reviews";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -114,11 +116,11 @@ export default async function Page({ params }: PageProps) {
                 <span className='bg-white opacity-80 text-black rounded-full py-0.5 px-3 text-xs'>{show.age_rating}</span>
               </div>
               <h2 className='text-wrap text-lg opacity-80'>{show?.description ?? "No description"}</h2>
-              {/* <Tab castArray={show?.cast ?? []} crewArray={show?.crew ?? []} /> */}
+              <Tab show={show} />
             </div>
             <ShowDetailAside />
           </article>
-          {/*<Reviews />*/}
+          <Reviews />
         </section>
     </main>
   );
