@@ -26,14 +26,8 @@ export async function generateMetadata({ params }: PageProps) {
   };
 }
 export function StreamingSites({ streamingSites }: { streamingSites: string[] }) {
-  const streamingFileNames : { [key: string]: string } = {
-    "Netflix": "netflix",
-    "Disney +": "disney_plus",
-    "HBO Max": "hbo_max",
-    "Hulu": "hulu",
-    "Amazon Prime Video": "prime_video",
-    "Apple TV": "apple_tv",
-  };
+  const toFileName = (name: string) => name.toLowerCase().replace(/ /g, "_");
+
   return (
     <article className="border-white/10 border text-white p-2 rounded-2xl justify-center w-full max-w-80 gap-2 flex flex-col">
       <p className="font-medium font-inter p-1 pb-2 border-b border-white/10 opacity-60 self-stretch">Where to watch</p>
@@ -42,7 +36,7 @@ export function StreamingSites({ streamingSites }: { streamingSites: string[] })
           <Image
             key={index}
             className="rounded-lg w-10 h-10"
-            src={`/streaming_sites/${streamingFileNames[site]}.png`}
+            src={`/streaming_sites/${toFileName(site)}.png`}
             alt={`${site} Logo`}
             width={40}
             height={40}
@@ -52,7 +46,6 @@ export function StreamingSites({ streamingSites }: { streamingSites: string[] })
     </article>
   );
 }
-
 
 export default async function Page({ params }: PageProps) {
   const { slug } = await params;
