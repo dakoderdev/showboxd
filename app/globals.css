@@ -37,7 +37,6 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -70,4 +69,22 @@ button {
   filter: blur(6px);
   border-radius:9999px;
   opacity: 0.4;
+}
+
+@utility gradient-text {
+  background-image: linear-gradient(75deg, #ff221e 0%, #0400ff 80%,#7212ae 100%);
+}
+
+option {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.shadow-stroke {
+  color: rgba(0, 0, 0, 0.6);
+  text-shadow: 
+    -1px -1px 0 #000,  
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
 }

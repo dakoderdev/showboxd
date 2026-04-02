@@ -71,7 +71,7 @@ export default async function Page({ params }: PageProps) {
   }
 
   return (
-    <main className="flex flex-col sm:flex-row gap-4 px-8 sm:px-20 sm:pb-2 min-h-[200vh] font-geist">
+    <main className="flex flex-col sm:flex-row gap-4 px-8 sm:px-17 sm:pb-2 min-h-[200vh] font-geist">
       <section className="sm:sticky top-2 flex flex-col items-center gap-2 h-fit">
           <figure className='relative w-fit h-fit before:inset-0 before:absolute before:ring-2 before:ring-inset before:ring-white/10 before:rounded-2xl shadow-md shadow-black/30'>
             <Image className='rounded-2xl object-cover min-w-72 md:min-w-80 h-120' src={show.img_vertical} alt={show.name} width={320} height={480} />

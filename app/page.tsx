@@ -1,6 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import ShowListSection from "./components/showListSection";
+import ShowListTop10 from "./components/showListTop10";
 import HeroSection from "./sections/heroSection";
 import SponsorSection from "./sections/sponsorSection";
 
@@ -25,7 +26,7 @@ export default async function Page() {
     <>
       <HeroSection randomShows={randomShows} />
       <SponsorSection />
-      <ShowListSection shows={shows}>Popular Shows</ShowListSection>
+      <ShowListTop10 shows={shows}></ShowListTop10>
     </>
   );
 }
