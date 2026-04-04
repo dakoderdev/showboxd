@@ -3,25 +3,28 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useMemo } from "react";
 
-type ShowListProps = { shows: { show_id: number; name: string; img_vertical: string }[] | null };
+type ShowItem = {
+  show_id: number;
+  watch_count: number;
+  shows: {
+    name: string;
+    img_vertical: string;
+  };
+};
 
-const generateRandomViewsTest = ({ shows, amount }: { shows: ShowListProps["shows"]; amount: number }) => {
-  if (shows === null) return [];
-  const showsWithViews = shows.map((show) => ({
-    ...show,
-    views: Math.floor(Math.random() * 10000000),
-  }));
-  return showsWithViews.sort((a, b) => b.views - a.views).slice(0, amount);
+type ShowListProps = { 
+  bestShows: ShowItem[] 
 };
 
 function chunkArray<T>(arr: T[], size: number): T[][] {
   return Array.from({ length: Math.ceil(arr.length / size) }, (_, i) => arr.slice(i * size, i * size + size));
 }
 
-export default function ShowListTop10({ shows }: ShowListProps) {
-  const [bestShows] = useState(() => generateRandomViewsTest({ shows, amount: 10 }));
+export default function ShowListTop10({ bestShows }: ShowListProps) {
   const groups = useMemo(() => chunkArray(bestShows, 4), [bestShows]);
   const [currentGroup, setCurrentGroup] = useState(0);
+
+  if (!bestShows || bestShows.length === 0) return null;
 
   return (
     <section className="relative w-full px-0 pb-4 pt-12 mb-6 sm:px-17 border-t border-white/10 bg-background">
@@ -43,12 +46,22 @@ export default function ShowListTop10({ shows }: ShowListProps) {
             <div className="flex transition-transform duration-300 ease-in-out" style={{ transform: `translateX(-${currentGroup * 100}%)` }}>
               {groups.map((group, groupIndex) => (
                 <div key={groupIndex} className="w-full shrink-0 grid grid-cols-4 gap-3">
-                  {group.map((show, index) => {
+                  {group.map((item, index) => {
                     const globalIndex = groupIndex * 4 + index;
+                    const showData = item.shows; 
+                    
                     return (
-                      <Link key={show.show_id} href={`/shows/${show.show_id}`} className="group relative cursor-pointer w-full min-h-96 shadow-md shadow-black/30 rounded-2xl overflow-hidden before:inset-0 before:absolute before:pointer-events-none before:ring-2 before:ring-inset before:ring-white/10 before:bg-linear-30 before:from-black/60 before:to-transparent before:to-70% before:rounded-2xl">
-                        <Image src={show.img_vertical} width={256} height={384} alt={show.name} className="object-cover w-full h-full" />
-                        <p className="absolute bottom-2 left-3.5 text-8xl font-semibold drop-shadow-sm bg-linear-to-t from-neutral-300 to-foreground  bg-clip-text text-transparent drop-shadow-black/40 group-hover:-translate-y-1 transition-transform">{globalIndex + 1}</p>
+                      <Link key={item.show_id} href={`/shows/${item.show_id}`} className="group relative cursor-pointer w-full min-h-96 shadow-md shadow-black/30 rounded-2xl overflow-hidden before:inset-0 before:absolute before:pointer-events-none before:ring-2 before:ring-inset before:ring-white/10 before:bg-linear-30 before:from-black/60 before:to-transparent before:to-70% before:rounded-2xl">
+                        <Image 
+                          src={showData.img_vertical} 
+                          width={256} 
+                          height={384} 
+                          alt={showData.name} 
+                          className="object-cover w-full h-full" 
+                        />
+                        <p className="absolute bottom-2 left-3.5 text-8xl font-semibold drop-shadow-sm bg-linear-to-t from-neutral-300 to-foreground  bg-clip-text text-transparent drop-shadow-black/40 group-hover:-translate-y-1 transition-transform">
+                          {globalIndex + 1}
+                        </p>
                       </Link>
                     );
                   })}

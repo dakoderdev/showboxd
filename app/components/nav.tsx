@@ -1,5 +1,97 @@
+"use client";
+import { useEffect, useState } from "react";
+import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
 import Image from "next/image";
+
+const supabase = createClient();
+
+export function Account() {
+  const [signedIn, setSignedIn] = useState(false);
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadUserProfile(userId: string) {
+      const { data, error } = await supabase.from("users").select("profile_picture").eq("user_id", userId).single();
+
+      if (!mounted) return;
+
+      if (!error && data?.profile_picture) {
+        setProfilePicture(data.profile_picture);
+      } else {
+        setProfilePicture(null);
+      }
+    }
+
+    async function fetchUser() {
+      const {
+        data: { user },
+        error,
+      } = await supabase.auth.getUser();
+
+      if (!mounted) return;
+
+      if (user && !error) {
+        setSignedIn(true);
+        await loadUserProfile(user.id);
+      } else {
+        setSignedIn(false);
+        setProfilePicture(null);
+      }
+    }
+
+    fetchUser();
+
+    const { data: subscription } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (!mounted) return;
+
+      if (session?.user) {
+        setSignedIn(true);
+        await loadUserProfile(session.user.id);
+      } else {
+        setSignedIn(false);
+        setProfilePicture(null);
+      }
+    });
+
+    return () => {
+      mounted = false;
+      subscription?.unsubscribe();
+    };
+  }, []);
+
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error("Error signing out:", error.message);
+    }
+  };
+
+  if (signedIn) {
+    return (
+      <button className="items-center h-10 w-10" onClick={handleSignOut}>
+        <Image src={profilePicture ?? "https://zxitfgxtpqfnxtcnwsbv.supabase.co/storage/v1/object/public/users/default.webp"} alt="User Avatar" width={32} height={32} className="rounded-full w-full h-full object-cover" />
+      </button>
+    );
+  }
+
+  return (
+    <ul className="flex h-10 sm:gap-1 bg-white p-1 xs:p-2 rounded-l-full sm:rounded-full shadow-none sm:shadow-xs sm:shadow-gray-950/10">
+      <li className="rounded-full w-fit hover:bg-black hover:text-white transition-colors">
+        <Link href="/auth/log-in" className="flex items-center w-full h-full py-1 px-4 text-sm sm:text-[0.938rem] text-nowrap">
+          Log-in
+        </Link>
+      </li>
+      <li className="rounded-full w-fit bg-black text-white transition-all">
+        <Link href="/auth/sign-up" className="flex items-center w-full h-full py-1 px-4 text-sm sm:text-[0.938rem] text-nowrap">
+          Sign-up
+        </Link>
+      </li>
+    </ul>
+  );
+}
 
 export default function Nav() {
   return (
@@ -20,18 +112,7 @@ export default function Nav() {
             </Link>
           </li>
         </ul>
-        <ul className="flex h-10 sm:gap-1 bg-white p-1 xs:p-2 rounded-l-full sm:rounded-full shadow-none sm:shadow-xs sm:shadow-gray-950/10">
-          <li className="rounded-full w-fit hover:bg-black hover:text-white transition-colors">
-            <Link className="flex items-center w-full h-full py-1 px-4 text-sm sm:text-[0.938rem] text-nowrap" href="#">
-              Log-in
-            </Link>
-          </li>
-          <li className="rounded-full w-fit bg-black text-white transition-all">
-            <Link className="flex items-center w-full h-full py-1 px-4 text-sm sm:text-[0.938rem] text-nowrap" href="#">
-              Sign-up
-            </Link>
-          </li>
-        </ul>
+        <Account />
       </div>
     </nav>
   );
