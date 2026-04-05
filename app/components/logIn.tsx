@@ -9,8 +9,6 @@ export default function LogIn() {
     const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -40,7 +38,7 @@ export default function LogIn() {
       <div className="flex flex-col w-full items-stretch gap-2">
         <h1 className="text-3xl font-semibold tracking-tight">Log In</h1>
         <p className="text-white/50 text-sm">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <a href="/auth/sign-up" className="text-white hover:underline">
             Sign up
           </a>

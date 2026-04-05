@@ -9,7 +9,6 @@ export function MainButtons({ showId, userChoices}: { showId: number; userChoice
   const supabase = createClient();
 
   const handleToggle = async (label: string) => {
-    console.log("handleToggle called", label);
     const column = label.toLowerCase() === "save" ? "saved" : label.toLowerCase() === "watched" ? "watched" : "liked";
 
     const key = column as keyof typeof choices;
@@ -80,16 +79,23 @@ export function Ratings({ showId, userRating }: { showId: string; userRating: nu
   const [rating, setRating] = useState(userRating || 0);
   const handleStarClick = (index: number, half: number) => async () => {
     const newRating = index * 2 + half;
+    const previousRating = rating;
     setRating(newRating);
 
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
+    if (!user) {
+      alert("Log in to rate shows!");
+      setRating(previousRating);
+      return;
+    }
+
     const { error } = await supabase.from("reviews").upsert(
       {
         show_id: showId,
-        user_id: user?.id,
+        user_id: user.id,
         rating: newRating,
       },
       { onConflict: "show_id,user_id" },
@@ -97,7 +103,7 @@ export function Ratings({ showId, userRating }: { showId: string; userRating: nu
 
     if (error) {
       console.error("Supabase error:", error.message);
-      setRating(prev => prev || 0);
+      setRating(previousRating);
     } else {
       router.refresh();
     }
@@ -135,7 +141,7 @@ export default function ShowDetailAside({ showId, userChoices, userRating }: { s
   return (
     <aside className="shrink-0 flex flex-col items-stretch gap-2 pt-2">
       <MainButtons showId={showId} userChoices={userChoices} />
-      <Ratings showId={showId} userRating={userRating} />
+      <Ratings showId={showId.toString()} userRating={userRating} />
       <article className="bg-white p-2 rounded-2xl text-black justify-center flex flex-col items-stretch">
         <button className="text-xs hover:bg-neutral-200/50 px-3 py-1 transition-colors rounded-lg text-center">Show your activity</button>
         <button className="text-xs hover:bg-neutral-200/50 px-3 py-1 transition-colors rounded-lg text-center">Review or log...</button>

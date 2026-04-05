@@ -4,8 +4,10 @@ import ShowListTop10 from "./components/showListTop10";
 import HeroSection from "./sections/heroSection";
 import SponsorSection from "./sections/sponsorSection";
 
-const shuffleAndSlice = (array: any[], amount: number) => {
-  const shuffled = [...array]; 
+const HERO_RANDOM_POOL = 48;
+
+const shuffleAndSlice = <T,>(array: T[], amount: number): T[] => {
+  const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
@@ -17,7 +19,10 @@ export default async function Page() {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
 
-  const { data: allShows } = await supabase.from("shows").select();
+  const { data: heroPool } = await supabase
+    .from("shows")
+    .select("show_id, img_vertical")
+    .limit(HERO_RANDOM_POOL);
 
   const { data: top10Data } = await supabase
     .from('most_watched_shows')
@@ -31,7 +36,7 @@ export default async function Page() {
     `)
     .limit(10);
 
-  const randomShows = shuffleAndSlice(allShows || [], 3);
+  const randomShows = shuffleAndSlice(heroPool || [], 3);
 
   return (
     <>

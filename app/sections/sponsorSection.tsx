@@ -30,9 +30,9 @@ export function MarqueeGroup() {
         hulu: ["logo_hulu.svg", "Logo of Hulu"],
         amazon: ["logo_amazonprimevideo.svg", "Logo of Amazon Prime Video"],
         apple: ["logo_appletv.svg", "Logo of Apple TV"],
-    }
+    } as const;
 
-    const imageKeys = Object.keys(images);
+    const imageKeys = Object.keys(images) as (keyof typeof images)[];
     
     return (
         <MarqueeContainer>

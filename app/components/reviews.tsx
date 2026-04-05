@@ -1,6 +1,4 @@
 "use client";
-import { useRef, useState, useEffect } from "react";
-import Image from "next/image";
 
 export default function Reviews() {
  return (
