@@ -26,11 +26,11 @@ export function StreamingSites({ streamingSites }: { streamingSites: string[] })
   const toFileName = (name: string) => name.toLowerCase().replace(/ /g, "_");
 
   return (
-    <article className="border-white/10 border text-white p-2 rounded-2xl justify-center w-full max-w-80 gap-2 flex flex-col">
-      <p className="font-medium font-inter p-1 pb-2 border-b border-white/10 opacity-60 self-stretch">Where to watch</p>
-      <div className="flex gap-1.5">
+    <article className="self-stretch border-white/10 border-l sm:border sm:self-stretch text-white pl-2 sm:p-2 sm:rounded-2xl justify-center w-fit sm:w-full max-w-80 gap-2 flex flex-col">
+      <p className="font-medium hidden sm:block font-inter p-1 pb-2 border-b border-white/10 opacity-60">Where to watch</p>
+      <div className="flex justify-center sm:justify-start gap-1.5">
         {streamingSites.map((site, index) => (
-          <Image key={index} className="rounded-lg w-10 h-10" src={`/streaming_sites/${toFileName(site)}.png`} alt={`${site} Logo`} width={40} height={40} />
+          <Image key={index} className=" sm:rounded-lg rounded-md w-5 h-5 sm:w-10 sm:h-10" src={`/streaming_sites/${toFileName(site)}.png`} alt={`${site} Logo`} width={40} height={40} />
         ))}
       </div>
     </article>
@@ -74,38 +74,40 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <main className="flex flex-col sm:flex-row gap-4 px-8 sm:px-12  md:px-17 sm:pb-2 min-h-[200vh] font-geist">
-      <section className="sm:sticky top-2 flex flex-col items-center gap-2 h-fit">
+      <section className="sm:sticky top-2 flex flex-col items-center sm:items-stretch gap-2 h-fit">
         <figure className="relative w-fit h-fit before:inset-0 before:absolute before:ring-2 before:ring-inset before:ring-white/10 before:rounded-2xl shadow-md shadow-black/30">
           <Image className="rounded-2xl object-cover min-w-72 md:min-w-80 h-120" src={show.img_vertical} alt={show.name} width={320} height={480} />
         </figure>
-        <article className="flex gap-2 justify-center">
-          <div className="flex gap-1">
-            <svg className="text-white/50 transition-all inline-block" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-              <path d="M14 2a5 5 0 0 1 5 5v14a1 1 0 0 1 -1.555 .832l-5.445 -3.63l-5.444 3.63a1 1 0 0 1 -1.55 -.72l-.006 -.112v-14a5 5 0 0 1 5 -5h4z" />
-            </svg>
-            <span className="text-xs opacity-40 text-inter text-center">{counts.saved}</span>
-          </div>
-          <div className="flex gap-1">
-            <svg className="text-white/50 transition-all inline-block" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-              <path d="M12 4c4.29 0 7.863 2.429 10.665 7.154l.22 .379l.045 .1l.03 .083l.014 .055l.014 .082l.011 .1v.11l-.014 .111a.992 .992 0 0 1 -.026 .11l-.039 .108l-.036 .075l-.016 .03c-2.764 4.836 -6.3 7.38 -10.555 7.499l-.313 .004c-4.396 0 -8.037 -2.549 -10.868 -7.504a1 1 0 0 1 0 -.992c2.831 -4.955 6.472 -7.504 10.868 -7.504zm0 5a3 3 0 1 0 0 6a3 3 0 0 0 0 -6z" />
-            </svg>
-            <span className="text-xs opacity-40 text-inter text-center">{counts.watched}</span>
-          </div>
-          <div className="flex gap-1">
-            <svg className="text-white/50 transition-all inline-block" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-              <path d="M6.979 3.074a6 6 0 0 1 4.988 1.425l.037 .033l.034 -.03a6 6 0 0 1 4.733 -1.44l.246 .036a6 6 0 0 1 3.364 10.008l-.18 .185l-.048 .041l-7.45 7.379a1 1 0 0 1 -1.313 .082l-.094 -.082l-7.493 -7.422a6 6 0 0 1 3.176 -10.215z" />{" "}
-            </svg>
-            <span className="text-xs opacity-40 text-inter text-center">{counts.liked}</span>
-          </div>
-        </article>
-        <StreamingSites streamingSites={show.streaming_sites} />
+        <div className="flex sm:flex-col justify-between items-center sm:items-stretch gap-3 sm:gap-2 h-fit sm:w-full">
+          <article className="flex gap-2 justify-center">
+            <div className="flex gap-1">
+              <svg className="text-white/50 transition-all inline-block" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M14 2a5 5 0 0 1 5 5v14a1 1 0 0 1 -1.555 .832l-5.445 -3.63l-5.444 3.63a1 1 0 0 1 -1.55 -.72l-.006 -.112v-14a5 5 0 0 1 5 -5h4z" />
+              </svg>
+              <span className="text-xs opacity-40 text-inter text-center">{counts.saved}</span>
+            </div>
+            <div className="flex gap-1">
+              <svg className="text-white/50 transition-all inline-block" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M12 4c4.29 0 7.863 2.429 10.665 7.154l.22 .379l.045 .1l.03 .083l.014 .055l.014 .082l.011 .1v.11l-.014 .111a.992 .992 0 0 1 -.026 .11l-.039 .108l-.036 .075l-.016 .03c-2.764 4.836 -6.3 7.38 -10.555 7.499l-.313 .004c-4.396 0 -8.037 -2.549 -10.868 -7.504a1 1 0 0 1 0 -.992c2.831 -4.955 6.472 -7.504 10.868 -7.504zm0 5a3 3 0 1 0 0 6a3 3 0 0 0 0 -6z" />
+              </svg>
+              <span className="text-xs opacity-40 text-inter text-center">{counts.watched}</span>
+            </div>
+            <div className="flex gap-1">
+              <svg className="text-white/50 transition-all inline-block" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M6.979 3.074a6 6 0 0 1 4.988 1.425l.037 .033l.034 -.03a6 6 0 0 1 4.733 -1.44l.246 .036a6 6 0 0 1 3.364 10.008l-.18 .185l-.048 .041l-7.45 7.379a1 1 0 0 1 -1.313 .082l-.094 -.082l-7.493 -7.422a6 6 0 0 1 3.176 -10.215z" />{" "}
+              </svg>
+              <span className="text-xs opacity-40 text-inter text-center">{counts.liked}</span>
+            </div>
+          </article>
+          <StreamingSites streamingSites={show.streaming_sites} />
+        </div>
       </section>
       <section>
-        <article className="pb-4 flex flex-col lg:flex-row lg:gap-8 lg:items-end border-b border-white/10 mb-2">
-          <h1 className="text-5xl md:text-7xl font-semibold tracking-tighter">{show.name}</h1>
+        <article className="pb-4 flex flex-col items-center md:items-baseline lg:flex-row lg:gap-8 sm:items-end border-b border-white/10 mb-2">
+          <h1 className="text-6xl text-center sm:text-start md:text-7xl font-semibold tracking-tighter">{show.name}</h1>
           <span className="text-3xl flex gap-2 items-center pb-1">
             {truncatedAverageRating}
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#fff">

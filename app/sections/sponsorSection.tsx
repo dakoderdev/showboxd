@@ -48,7 +48,7 @@ export function MarqueeGroup() {
 
 export default function SponsorSection() {
     return (
-        <section className='relative z-35 w-full py-10 sm:py-16 -mt-12 bg-background border-t border-white/10 whitespace-nowrap before:absolute before:inset-0 before:pointer-events-none before:bg-linear-to-r before:from-background before:via-transparent before:to-background before:z-40 overflow-hidden'>
+        <section className='relative z-35 w-full py-16 -mt-12 bg-background border-t border-white/10 shadow-2xl shadow-black/25 whitespace-nowrap before:absolute before:inset-0 before:pointer-events-none before:bg-linear-to-r before:from-background before:via-transparent before:to-background before:z-40 overflow-hidden'>
             <MarqueeGroup />
             <MarqueeGroup />
         </section>

@@ -3,8 +3,9 @@ import { type NextRequest, NextResponse } from "next/server";
 import { getSupabaseAnonKey, getSupabaseUrl } from "./env";
 
 /**
- * Runs on matching requests: refreshes the auth session when needed and writes
- * updated cookies on the response. Server Components then see a current session.
+ * Next.js 16+ proxy: refresh auth cookies for matched requests.
+ * Uses getClaims() (JWT verify / local JWKS) instead of getUser() so we avoid
+ * a round trip to the Auth API on every navigation.
  */
 export async function updateSession(request: NextRequest) {
   const supabaseUrl = getSupabaseUrl();
@@ -22,7 +23,7 @@ export async function updateSession(request: NextRequest) {
       getAll() {
         return request.cookies.getAll();
       },
-      setAll(cookiesToSet) {
+      setAll(cookiesToSet, headers) {
         cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
         supabaseResponse = NextResponse.next({
           request,
@@ -30,11 +31,12 @@ export async function updateSession(request: NextRequest) {
         cookiesToSet.forEach(({ name, value, options }) =>
           supabaseResponse.cookies.set(name, value, options),
         );
+        Object.entries(headers).forEach(([key, value]) => supabaseResponse.headers.set(key, value));
       },
     },
   });
 
-  await supabase.auth.getUser();
+  await supabase.auth.getClaims();
 
   return supabaseResponse;
 }

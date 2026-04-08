@@ -49,12 +49,16 @@ button {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 @utility gradient-rainbow {
-  background: linear-gradient(90deg,rgba(255, 119, 28, 1) 0%, rgba(255, 28, 28, 1) 20%, rgba(237, 83, 150, 1) 40%, rgba(87, 91, 199, 1) 60%, rgba(59, 255, 98, 1) 100%, rgba(41, 255, 244, 1) 80%);
+  background: linear-gradient(90deg, rgba(255, 119, 28, 1) 0%, rgba(255, 28, 28, 1) 20%, rgba(237, 83, 150, 1) 40%, rgba(87, 91, 199, 1) 60%, rgba(59, 255, 98, 1) 100%, rgba(41, 255, 244, 1) 80%);
+}
+
+@utility gradient-rainbow-r {
+  background: linear-gradient(270deg, rgba(255, 119, 28, 1) 0%, rgba(255, 28, 28, 1) 20%, rgba(237, 83, 150, 1) 40%, rgba(87, 91, 199, 1) 60%, rgba(59, 255, 98, 1) 100%, rgba(41, 255, 244, 1) 80%);
 }
 
 #main-button::before {
@@ -65,14 +69,18 @@ button {
   right: -1px;
   bottom: -1px;
   left: -1px;
-  background-image: linear-gradient(75deg, #ff221e 0%, #0400ff 80%,#7212ae 100%);
+  background-image: linear-gradient(75deg, #ff221e 0%, #0400ff 80%, #7212ae 100%);
   filter: blur(6px);
-  border-radius:9999px;
+  border-radius: 9999px;
   opacity: 0.4;
 }
 
 @utility gradient-text {
-  background-image: linear-gradient(75deg, #ff221e 0%, #0400ff 80%,#7212ae 100%);
+  background-image: linear-gradient(75deg, #ff221e 0%, #0400ff 80%, #7212ae 100%);
+}
+
+@utility gradient-subdued {
+  background-image: linear-gradient(75deg, #ef9999 0%, #8b8bf3 80%, #e2c7d1 100%);
 }
 
 option {
@@ -82,9 +90,10 @@ option {
 
 .shadow-stroke {
   color: rgba(0, 0, 0, 0.6);
-  text-shadow: 
-    -1px -1px 0 #000,  
-     1px -1px 0 #000,
-    -1px  1px 0 #000,
-     1px  1px 0 #000;
+  text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
 }
+
