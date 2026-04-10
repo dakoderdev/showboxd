@@ -31,7 +31,7 @@ export default function ShowListTop10({ bestShows }: ShowListProps) {
   if (!bestShows || bestShows.length === 0) return null;
 
   return (
-    <section className="relative w-full px-0 pt-14 pb-16 sm:px-12 md:px-17 border-y border-white/10 bg-black overflow-hidden">
+    <section className="relative w-full px-0 pt-14 pb-16 sm:px-12 md:px-17 border-y border-white/10 gradient-linear-to-r from-[#01020a] to-[#050106] overflow-hidden">
       <div className="flex flex-col gap-6 px-4 sm:px-0 pb-4">
         <h2 className="text-6xl tracking-tighter text-center font-semibold text-white/90">
           <strong className="gradient-text bg-clip-text text-white/70 font-semibold">Most Popular</strong> Right Now

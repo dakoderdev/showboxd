@@ -106,8 +106,8 @@ export default async function Page({ params }: PageProps) {
         </div>
       </section>
       <section>
-        <article className="pb-4 flex flex-col items-center md:items-baseline lg:flex-row lg:gap-8 sm:items-end border-b border-white/10 mb-2">
-          <h1 className="text-6xl text-center sm:text-start md:text-7xl font-semibold tracking-tighter">{show.name}</h1>
+        <article className="sm:pb-4 flex justify-center sm:justify-start items-baseline flex-wrap flex-row gap-x-4 lg:gap-x-6 sm:items-end sm:border-b border-white/10 mb-2">
+          <h1 className="text-6xl text-center sm:text-start md:text-7xl font-semibold tracking-tighter text-wrap wrap-anywhere">{show.name}</h1>
           <span className="text-3xl flex gap-2 items-center pb-1">
             {truncatedAverageRating}
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#fff">
@@ -118,7 +118,7 @@ export default async function Page({ params }: PageProps) {
         </article>
         <article className="flex flex-col lg:flex-row justify-between gap-4 mb-12">
           <div>
-            <div className="mb-4 gap-1 flex">
+            <div className="mb-6 sm:mb-4 gap-1 flex justify-center sm:justify-baseline">
               <span className="bg-white opacity-80 text-black rounded-full py-0.5 px-3 text-xs">
                 {show.seasons} {show.season === 1 ? "Season" : "Seasons"}
               </span>

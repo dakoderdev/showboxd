@@ -7,7 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 const supabase = createClient();
 
-const defaultProfilePicture = `${(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").replace(/\/$/, "")}/storage/v1/object/public/users/default.webp`;
+const DEFAULT_PROFILE_PICTURE = `${(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").replace(/\/$/, "")}/storage/v1/object/public/users/default.webp`;
 
 export function Account() {
   const router = useRouter();
@@ -78,7 +78,7 @@ export function Account() {
   if (signedIn) {
     return (
       <button type="button" className="items-center h-10 w-10" onClick={goToProfile}>
-        <Image src={profilePicture ?? defaultProfilePicture} alt="User Avatar" width={32} height={32} className="rounded-full w-full h-full object-cover" />
+        <Image src={profilePicture ?? DEFAULT_PROFILE_PICTURE} alt="User Avatar" width={32} height={32} className="rounded-full w-full h-full object-cover" />
       </button>
     );
   }

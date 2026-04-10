@@ -11,17 +11,20 @@ type Show = {
 };
 
 type ShowListProps = {
-  shows: Show[];
+  shows: Show[],
+  timeframe: string;
 };
 
-export function ShowListAll({ shows }: ShowListProps) {
+export function ShowListAll({ shows, timeframe = "this week" }: ShowListProps) {
+  let modifiedTimeframe = timeframe?.replaceAll("-"," ") || "";
+  modifiedTimeframe = modifiedTimeframe === "all time" ? "of all time" : modifiedTimeframe;
   return (
     <div className="flex flex-col w-full gap-4 px-4 sm:px-0 pb-4">
       <h2 className="text-6xl tracking-tighter text-foreground/90 font-semibold">
         <strong className="gradient-text bg-clip-text text-white/70 font-semibold">
           Popular shows
         </strong>{" "}
-        this week
+        {modifiedTimeframe}
       </h2>
 
       <div className="w-full grid grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-2">
@@ -163,7 +166,7 @@ export default async function Page({ searchParams }: PageProps) {
 
   return (
     <section className="flex justify-center items-center gap-4 w-full px-0 py-4 sm:px-12 md:px-17">
-      <ShowListAll shows={result} />
+      <ShowListAll shows={result} timeframe={filters.popular} />
     </section>
   );
 }
