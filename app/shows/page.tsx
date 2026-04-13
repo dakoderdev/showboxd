@@ -1,8 +1,8 @@
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
-import RainbowGlow from "@/components/rainbowGlow";
-import ShowListPreview from "@/components/showListPreview";
-import ShowsBrowseFilters from "@/components/showsBrowseFilters";
+import RainbowGlow from "../../components/rainbowGlow";
+import ShowListPreview from "../../components/showListPreview";
+import ShowsBrowseFilters from "../../components/showsBrowseFilters";
 
 export default async function Page() {
   const cookieStore = await cookies();
@@ -14,9 +14,7 @@ export default async function Page() {
 
   const { data: popularShows } = await supabase.from("shows").select("show_id, name, img_vertical").in("show_id", topShowIds);
 
-  const sortedPopularShows = topShowIds
-    .map((id) => popularShows?.find((show) => show.show_id === id))
-    .filter((s): s is NonNullable<typeof s> => s != null);
+  const sortedPopularShows = topShowIds.map((id) => popularShows?.find((show) => show.show_id === id)).filter((s): s is NonNullable<typeof s> => s != null);
 
   return (
     <>

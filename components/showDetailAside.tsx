@@ -2,8 +2,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
+import LogShowDialog, { type ShowLogSummary } from "./dialog";
 
-export function MainButtons({ showId, userChoices}: { showId: number; userChoices: { saved: boolean; watched: boolean; liked: boolean }}) {
+export function MainButtons({ showId, userChoices }: { showId: string | number; userChoices: { saved: boolean; watched: boolean; liked: boolean } }) {
   const [choices, setChoices] = useState(userChoices || { saved: false, watched: false, liked: false });
   const router = useRouter();
   const supabase = createClient();
@@ -137,16 +138,27 @@ export function Ratings({ showId, userRating }: { showId: string; userRating: nu
   );
 }
 
-export default function ShowDetailAside({ showId, userChoices, userRating }: { showId: number; userChoices: { saved: boolean; watched: boolean; liked: boolean }; userRating: number | null }) {
+export default function ShowDetailAside({ showId, show, userChoices, userRating, initialReview }: { showId: string | number; show: ShowLogSummary; userChoices: { saved: boolean; watched: boolean; liked: boolean }; userRating: number | null; initialReview: { rating: number | null; comment: string | null } | null }) {
+  const [logOpen, setLogOpen] = useState(false);
+
   return (
     <aside className="shrink-0 flex flex-col items-center md:items-stretch gap-3 sm:gap-2 pt-2">
       <MainButtons showId={showId} userChoices={userChoices} />
-      <Ratings showId={showId.toString()} userRating={userRating} />
+      <Ratings showId={String(showId)} userRating={userRating} />
+      <LogShowDialog open={logOpen} onClose={() => setLogOpen(false)} show={show} userChoices={userChoices} initialReview={initialReview} />
       <article className="bg-neutral-900/70 border border-white/10 shadow-sm shadow-black/80 p-2 rounded-2xl text-white/80 justify-center grid grid-cols-2 sm:flex w-full max-w-80 flex-col items-stretch">
-        <button className="text-sm sm:text-xs hover:bg-neutral-200/10 py-3 px-3 sm:py-1 transition-colors rounded-lg text-center">Show your activity</button>
-        <button className="text-sm sm:text-xs hover:bg-neutral-200/10 py-3 px-3 sm:py-1 transition-colors rounded-lg text-center">Review or log...</button>
-        <button className="text-sm sm:text-xs hover:bg-neutral-200/10 py-3 px-3 sm:py-1 transition-colors rounded-lg text-center">Add to lists...</button>
-        <button className="text-sm sm:text-xs hover:bg-neutral-200/10 py-3 px-3 sm:py-1 transition-colors rounded-lg text-center">Share</button>
+        <button type="button" className="text-sm sm:text-xs hover:bg-neutral-200/10 py-3 px-3 sm:py-1 transition-colors rounded-lg text-center">
+          Show your activity
+        </button>
+        <button type="button" onClick={() => setLogOpen(true)} className="text-sm sm:text-xs hover:bg-neutral-200/10 py-3 px-3 sm:py-1 transition-colors rounded-lg text-center">
+          Review or log…
+        </button>
+        <button type="button" className="text-sm sm:text-xs hover:bg-neutral-200/10 py-3 px-3 sm:py-1 transition-colors rounded-lg text-center">
+          Add to lists...
+        </button>
+        <button type="button" className="text-sm sm:text-xs hover:bg-neutral-200/10 py-3 px-3 sm:py-1 transition-colors rounded-lg text-center">
+          Share
+        </button>
       </article>
     </aside>
   );

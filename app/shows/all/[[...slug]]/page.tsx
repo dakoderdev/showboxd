@@ -32,7 +32,7 @@ export function ShowListAll({ shows, timeframe = "this week" }: ShowListProps) {
           <Link
             key={show.show_id}
             href={`/shows/${show.show_id}`}
-            className="relative w-full min-h-64 aspect-2/3 shadow-md shadow-black/30 rounded-xl overflow-hidden before:absolute before:inset-0 before:pointer-events-none before:ring-2 before:ring-inset before:ring-white/10 before:rounded-2xl"
+            className="relative w-full min-h-64 aspect-2/3 shadow-md shadow-black/30 rounded-xl overflow-hidden before:absolute before:inset-0 before:pointer-events-none before:ring-2 before:ring-inset before:ring-white/10 before:rounded-xl"
           >
             <Image
               src={show.img_vertical}
@@ -166,7 +166,7 @@ export default async function Page({ searchParams }: PageProps) {
 
   return (
     <section className="flex justify-center items-center gap-4 w-full px-0 py-4 sm:px-12 md:px-17">
-      <ShowListAll shows={result} timeframe={filters.popular} />
+      <ShowListAll shows={result} timeframe={filters.popular ?? "this week"} />
     </section>
   );
 }

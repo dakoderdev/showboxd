@@ -1,9 +1,9 @@
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import Image from "next/image";
-import ShowDetailAside from "@/components/showDetailAside";
-import Tab from "@/components/tab";
-import Reviews from "@/components/reviews";
+import ShowDetailAside from "../../../components/showDetailAside";
+import Tab from "../../../components/tab";
+import Reviews from "../../../components/reviews";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -118,7 +118,7 @@ export default async function Page({ params }: PageProps) {
         </article>
         <article className="flex flex-col lg:flex-row justify-between gap-4 mb-12">
           <div>
-            <div className="mb-6 sm:mb-4 gap-1 flex justify-center sm:justify-baseline">
+            <div className="mb-6 sm:mb-4 gap-1 flex justify-center sm:justify-start">
               <span className="bg-white opacity-80 text-black rounded-full py-0.5 px-3 text-xs">
                 {show.seasons} {show.season === 1 ? "Season" : "Seasons"}
               </span>
@@ -128,9 +128,20 @@ export default async function Page({ params }: PageProps) {
             <h2 className="text-wrap text-lg opacity-80">{show?.description ?? "No description"}</h2>
             <Tab show={show} />
           </div>
-          <ShowDetailAside userChoices={userChoices} userRating={userRating} showId={show.show_id} />
+          <ShowDetailAside
+            showId={show.show_id}
+            show={{
+              show_id: show.show_id,
+              name: show.name,
+              img_vertical: show.img_vertical,
+              seasons: show.seasons,
+            }}
+            userChoices={userChoices}
+            userRating={userRating}
+            initialReview={userReview.data ?? null}
+          />
         </article>
-        <Reviews />
+        <Reviews showId={show.show_id} />
       </section>
     </main>
   );
