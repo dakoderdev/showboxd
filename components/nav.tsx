@@ -7,7 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 const supabase = createClient();
 
-const DEFAULT_PROFILE_PICTURE = `${(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").replace(/\/$/, "")}/storage/v1/object/public/users/default.webp`;
+const DEFAULT_PROFILE_PICTURE = `${(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").replace(/\/$/, "")}/storage/v1/object/public/users/def.webp`;
 
 export function Account() {
   const router = useRouter();
@@ -78,7 +78,7 @@ export function Account() {
   if (signedIn) {
     return (
       <button type="button" className="items-center h-10 w-10" onClick={goToProfile}>
-        <Image src={profilePicture ?? DEFAULT_PROFILE_PICTURE} alt="User Avatar" width={32} height={32} className="rounded-full w-full h-full object-cover" />
+        <Image src={profilePicture ?? DEFAULT_PROFILE_PICTURE} alt="User Avatar" width={32} height={32} className="rounded-full w-full h-full object-cover ring ring-neutral-100/20" />
       </button>
     );
   }
@@ -86,13 +86,13 @@ export function Account() {
   return (
     <ul className="flex h-10 sm:gap-1 bg-white p-1 xs:p-2 rounded-full shadow-none sm:shadow-xs sm:shadow-gray-950/10">
       <li className="rounded-full w-fit hover:bg-black hover:text-white transition-colors">
-        <Link href="/auth/log-in" className="flex font-medium sm:font-normal items-center w-full h-full py-1 px-4 text-sm sm:text-[0.938rem] text-nowrap">
-          Log-in
+        <Link href="/auth/login" className="flex font-medium sm:font-normal items-center w-full h-full py-1 px-4 text-sm sm:text-[0.938rem] text-nowrap">
+          Log In
         </Link>
       </li>
       <li className="rounded-full w-fit bg-black text-white transition-all">
-        <Link href="/auth/sign-up" className="flex font-medium sm:font-normal items-center w-full h-full py-1 px-4 text-sm sm:text-[0.938rem] text-nowrap">
-          Sign-up
+        <Link href="/auth/signup" className="flex font-medium sm:font-normal items-center w-full h-full py-1 px-4 text-sm sm:text-[0.938rem] text-nowrap">
+          Sign Up
         </Link>
       </li>
     </ul>

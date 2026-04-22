@@ -103,7 +103,8 @@ export default async function Page({ searchParams }: PageProps) {
     await Promise.all([
       supabase
         .from("shows")
-        .select("show_id, name, img_vertical, release_year"),
+        .select("show_id, name, img_vertical, release_year")
+        .limit(48),
 
       supabase.from("reviews").select("show_id, rating"),
 

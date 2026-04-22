@@ -18,6 +18,11 @@ const nextConfig: NextConfig = {
         hostname: supabaseStorageHostname(),
         pathname: "/storage/v1/**",
       },
+      {
+        protocol: "https",
+        hostname: "image.tmdb.org",
+        pathname: "/t/p/**",
+      },
     ],
   },
 };

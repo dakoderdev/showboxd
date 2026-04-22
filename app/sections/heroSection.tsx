@@ -7,17 +7,12 @@ interface HeroSectionProps {
   randomShows: Array<{ show_id?: string; img_vertical?: string }>;
 }
 
-const HERO_PHRASES = [
-  "Keep track of shows you've watched!",
-  "Save the shows that you want to see",
-  "Check in and interact with your friends",
-] as const;
+const HERO_PHRASES = ["Keep track of shows you've watched!", "Save the shows that you want to see", "Check in and interact with your friends"] as const;
 
 export default function Header({ randomShows }: HeroSectionProps) {
   const phraseRef = useRef<HTMLHeadingElement>(null);
-  const [getStartedLink, setGetStartedLink] = useState("/auth/sign-up");
+  const [getStartedLink, setGetStartedLink] = useState("/auth/signup");
   const supabase = createClient();
-
 
   useEffect(() => {
     const phraseChange = (opacity: number, y: number) => {
@@ -44,18 +39,20 @@ export default function Header({ randomShows }: HeroSectionProps) {
         void el.offsetHeight;
         el.style.transition = "all 0.6s ease";
         phraseChange(1, 0);
-      }, 560);84   }, 8000);
+      }, 560);
+      84;
+    }, 8000);
 
     const checkUser = async () => {
-    const { data } = await supabase.auth.getSession();
-    if (data.session) {
-      setGetStartedLink("/shows");
-    } else {
-      setGetStartedLink("/auth/sign-up");
-    }
-  };
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        setGetStartedLink("/shows");
+      } else {
+        setGetStartedLink("/auth/signup");
+      }
+    };
 
-  checkUser();
+    checkUser();
 
     return () => {
       clearInterval(intervalId);
@@ -73,7 +70,9 @@ export default function Header({ randomShows }: HeroSectionProps) {
         <h1 ref={phraseRef} className="text-6xl text-center sm:text-start pt-7 px-3 md:px-0 sm:pt-3 pb-3 md:pb-6 tracking-tighter font-semibold text-balance var(--font-geist-sans) transition-all duration-560">
           {HERO_PHRASES[0]}
         </h1>
-        <Link href={getStartedLink} id="main-button" className="bg-gray-200 text-black mb-3 font-medium relative z-2 hover:bg-white py-3 px-6 rounded-full overflow-hidden transition-colors duration-300">Get Started</Link>
+        <Link href={getStartedLink} id="main-button" className="bg-gray-200 text-black mb-3 font-medium relative z-2 hover:bg-white py-3 px-6 rounded-full overflow-hidden transition-colors duration-300">
+          Get Started
+        </Link>
       </div>
       <div className="relative mb-12 h-fit">
         <Link href={`/shows/${randomShows[0]?.show_id ?? "#"}`} className="z-30 absolute left-1/3 sm:left-1/5 -translate-x-1/3 pointer-events-none sm:pointer-events-auto sm:-translate-x-1/4 top-12 w-56 h-84 md:w-64 md:h-96 aspect-2/3 bg-neutral-900 shadow-md shadow-black/30 rounded-2xl overflow-hidden before:inset-0 before:absolute before:pointer-events-none before:ring-2 before:ring-inset before:ring-white/10 before:rounded-2xl -rotate-3 hover:translate-y-0 sm:hover:-translate-y-2 delay-75 transition-transform">

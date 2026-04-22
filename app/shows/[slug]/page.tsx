@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: PageProps) {
 export function StreamingSites({ streamingSites }: { streamingSites: string[] }) {
   const toFileName = (name: string) => name.toLowerCase().replace(/ /g, "_");
 
-  return (
+return (
     <article className="self-stretch border-white/10 border-l sm:border sm:self-stretch text-white pl-2 sm:p-2 sm:rounded-2xl justify-center w-fit sm:w-full max-w-80 gap-2 flex flex-col">
       <p className="font-medium hidden sm:block font-inter p-1 pb-2 border-b border-white/10 opacity-60">Where to watch</p>
       <div className="flex justify-center sm:justify-start gap-1.5">
