@@ -45,7 +45,7 @@ export default function ShowListTop10({ bestShows }: ShowListProps) {
                 const showData = resolveShow(item.shows);
                 return (
                   <Link key={item.show_id} href={`/shows/${item.show_id}`} className="group relative cursor-pointer w-full aspect-[2/3] shadow-md shadow-black/30 rounded-2xl overflow-hidden before:inset-0 before:absolute before:pointer-events-none before:ring-0 before:sm:ring-2 before:ring-inset before:ring-white/10 before:bg-linear-30 before:from-black/60 before:to-transparent before:to-70% before:rounded-2xl">
-                    <Image src={showData.img_vertical} width={256} height={384} alt={showData.name} className="object-cover w-full h-full" />
+                    <Image src={showData.img_vertical} width={256} height={384} sizes="256px" alt={showData.name} className="object-cover w-full h-full" />
                     <p className="absolute bottom-1 left-2 text-7xl font-semibold drop-shadow-sm bg-linear-to-t from-neutral-300 to-foreground bg-clip-text text-transparent group-hover:-translate-y-1 transition-transform">{globalIndex + 1}</p>
                   </Link>
                 );
@@ -75,7 +75,7 @@ export default function ShowListTop10({ bestShows }: ShowListProps) {
                     const showData = resolveShow(item.shows);
                     return (
                       <Link key={item.show_id} href={`/shows/${item.show_id}`} className="group relative cursor-pointer w-full aspect-[2/3] shadow-md shadow-black/30 rounded-xl md:rounded-2xl overflow-hidden before:inset-0 before:absolute before:pointer-events-none before:ring-2 before:ring-inset before:ring-white/10 before:bg-linear-30 before:from-black/60 before:to-transparent before:to-70% before:rounded-2xl">
-                        <Image src={showData.img_vertical} width={256} height={384} alt={showData.name} className="object-cover w-full h-full" />
+                        <Image src={showData.img_vertical} width={256} height={384} sizes="256px" alt={showData.name} className="object-cover w-full h-full" />
                         <p className="absolute bottom-2 left-3.5 text-6xl sm:text-7xl md:text-8xl font-semibold drop-shadow-sm bg-linear-to-t from-neutral-300 to-foreground bg-clip-text text-transparent drop-shadow-black/40 group-hover:-translate-y-1 transition-transform">{globalIndex + 1}</p>
                       </Link>
                     );

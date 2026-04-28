@@ -76,13 +76,13 @@ export default function Header({ randomShows }: HeroSectionProps) {
       </div>
       <div className="relative mb-12 h-fit">
         <Link href={`/shows/${randomShows[0]?.show_id ?? "#"}`} className="z-30 absolute left-1/3 sm:left-1/5 -translate-x-1/3 pointer-events-none sm:pointer-events-auto sm:-translate-x-1/4 top-12 w-56 h-84 md:w-64 md:h-96 aspect-2/3 bg-neutral-900 shadow-md shadow-black/30 rounded-2xl overflow-hidden before:inset-0 before:absolute before:pointer-events-none before:ring-2 before:ring-inset before:ring-white/10 before:rounded-2xl -rotate-3 hover:translate-y-0 sm:hover:-translate-y-2 delay-75 transition-transform">
-          <Image priority src={randomShows[0]?.img_vertical ?? "/placeholder.png"} alt="Hero show image" width={256} height={384} className="w-full h-full object-cover" />
+          <Image priority src={randomShows[0]?.img_vertical ?? "/placeholder.png"} alt="Hero show image" width={256} height={384} sizes="256px" className="w-full h-full object-cover" />
         </Link>
         <Link href={`/shows/${randomShows[1]?.show_id ?? "#"}`} className="z-40 relative block mx-auto top-4 w-56 h-84 md:w-64 md:h-96 bg-neutral-900 overflow-hidden shadow-md shadow-black/30 rounded-2xl before:inset-0 before:absolute before:pointer-events-none before:ring-2 before:ring-inset before:ring-white/10 before:rounded-2xl hover:translate-y-0 sm:hover:-translate-y-2 delay-75 transition-transform">
-          <Image priority src={randomShows[1]?.img_vertical ?? "/placeholder.png"} alt="Hero show image" width={256} height={384} className="w-full h-full object-cover" />
+          <Image priority src={randomShows[1]?.img_vertical ?? "/placeholder.png"} alt="Hero show image" width={256} height={384} sizes="256px" className="w-full h-full object-cover" />
         </Link>
         <Link href={`/shows/${randomShows[2]?.show_id ?? "#"}`} className="z-30 absolute right-1/3 sm:right-1/5 translate-x-1/3 pointer-events-none sm:pointer-events-auto sm:translate-x-1/4 top-12 w-56 h-84 md:w-64 md:h-96 bg-neutral-900 overflow-hidden shadow-md shadow-black/30 rounded-2xl before:inset-0 before:absolute before:pointer-events-none before:ring-2 before:ring-inset before:ring-white/10 before:rounded-2xl rotate-3 hover:translate-y-0 sm:hover:-translate-y-2 delay-75 transition-transform">
-          <Image priority src={randomShows[2]?.img_vertical ?? "/placeholder.png"} alt="Hero show image" width={256} height={384} className="w-full h-full object-cover" />
+          <Image priority src={randomShows[2]?.img_vertical ?? "/placeholder.png"} alt="Hero show image" width={256} height={384} sizes="256px" className="w-full h-full object-cover" />
         </Link>
       </div>
       <div className="absolute inset-x-4 bottom-0 sm:-bottom-5 h-12 gradient-rainbow opacity-85 md:rounded-xl blur-3xl"></div>

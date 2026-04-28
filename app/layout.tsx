@@ -29,7 +29,7 @@ export default function RootLayout({
         <Nav />
         {children}
         <footer className="border-t border-white/10 bg-neutral-900/20 py-12 text-center text-white/40 text-sm">
-          <p>&copy; 2026 Showboxd. All rights reserved.</p>
+          <p>&copy; 2026 Showboxd. All rights reserved. Some of the features are still in beta.</p>
         </footer>
       </body>
     </html>

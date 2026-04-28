@@ -9,7 +9,7 @@ export function ImageContainer({source, alt}: ImageContainerProps) {
     return (
         <Image src={source} alt={alt}
             width={180} height={80}
-            className="my-auto inline-block mx-6 text-white w-max h-9 sm:h-9 max-w-44"/>
+            className="my-auto inline-block mx-6 text-white w-max h-8 sm:h-9 max-w-44"/>
     )
 }
 import { ReactNode } from "react";
@@ -48,7 +48,7 @@ export function MarqueeGroup() {
 
 export default function SponsorSection() {
     return (
-        <section className='relative z-35 w-full py-16 -mt-12 bg-background border-t border-white/10 shadow-2xl shadow-black/25 whitespace-nowrap before:absolute before:inset-0 before:pointer-events-none before:bg-linear-to-r before:from-background before:via-transparent before:to-background before:z-40 overflow-hidden'>
+        <section className='relative z-35 w-full py-14 sm:py-16 -mt-12 bg-background border-t border-white/10 shadow-2xl shadow-black/25 whitespace-nowrap before:absolute before:inset-0 before:pointer-events-none before:bg-linear-to-r before:from-background before:via-transparent before:to-background before:z-40 overflow-hidden'>
             <MarqueeGroup />
             <MarqueeGroup />
         </section>

@@ -26,11 +26,11 @@ export function StreamingSites({ streamingSites }: { streamingSites: string[] })
   const toFileName = (name: string) => name.toLowerCase().replace(/ /g, "_");
 
 return (
-    <article className="self-stretch border-white/10 border-l sm:border sm:self-stretch text-white pl-2 sm:p-2 sm:rounded-2xl justify-center w-fit sm:w-full max-w-80 gap-2 flex flex-col">
+    <article className={`${streamingSites.length > 0 ? "block" : "hidden"} self-stretch border-white/10 border-l sm:border sm:self-stretch text-white pl-2 sm:p-2 sm:rounded-2xl justify-center w-fit sm:w-full max-w-80 gap-2 flex flex-col`}>
       <p className="font-medium hidden sm:block font-inter p-1 pb-2 border-b border-white/10 opacity-60">Where to watch</p>
       <div className="flex justify-center sm:justify-start gap-1.5">
         {streamingSites.map((site, index) => (
-          <Image key={index} className=" sm:rounded-lg rounded-md w-5 h-5 sm:w-10 sm:h-10" src={`/streaming_sites/${toFileName(site)}.png`} alt={`${site} Logo`} width={40} height={40} />
+          <Image key={index} className=" sm:rounded-lg rounded-md w-5 h-5 sm:w-10 sm:h-10" src={`/streaming_sites/${toFileName(site)}.png`} alt={`${site} Logo`} width={40} height={40} sizes="40px" />
         ))}
       </div>
     </article>
@@ -75,8 +75,8 @@ export default async function Page({ params }: PageProps) {
   return (
     <main className="flex flex-col sm:flex-row gap-4 px-8 sm:px-12  md:px-17 sm:pb-2 min-h-[200vh] font-geist">
       <section className="sm:sticky top-2 flex flex-col items-center sm:items-stretch gap-2 h-fit">
-        <figure className="relative w-fit h-fit before:inset-0 before:absolute before:ring-2 before:ring-inset before:ring-white/10 before:rounded-2xl shadow-md shadow-black/30">
-          <Image className="rounded-2xl object-cover min-w-72 md:min-w-80 h-120" src={show.img_vertical} alt={show.name} width={320} height={480} />
+        <figure className="relative w-fit h-fit -mt-5 sm:mt-0 before:inset-0 before:absolute before:ring-2 before:ring-inset before:ring-white/10 before:rounded-2xl shadow-md shadow-black/30">
+          <Image className="rounded-2xl object-cover min-w-72 md:min-w-80 h-120" src={show.img_vertical} alt={show.name} width={320} height={480} sizes="320px" />
         </figure>
         <div className="flex sm:flex-col justify-between items-center sm:items-stretch gap-3 sm:gap-2 h-fit sm:w-full">
           <article className="flex gap-2 justify-center">
@@ -123,7 +123,7 @@ export default async function Page({ params }: PageProps) {
                 {show.seasons} {show.season === 1 ? "Season" : "Seasons"}
               </span>
               <span className="bg-white opacity-80 text-black rounded-full py-0.5 px-3 text-xs">{show.ongoing ? "Ongoing" : "Completed"}</span>
-              <span className="bg-white opacity-80 text-black rounded-full py-0.5 px-3 text-xs">{show.age_rating}</span>
+              <span className={`${show.age_rating ? "block" : "hidden"} bg-white opacity-80 text-black rounded-full py-0.5 px-3 text-xs`}>{show.age_rating}</span>
             </div>
             <h2 className="text-wrap text-lg opacity-80">{show?.description ?? "No description"}</h2>
             <Tab show={show} />

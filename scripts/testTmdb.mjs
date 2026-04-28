@@ -65,7 +65,7 @@ function toSqlValue(val) {
 }
 
 async function run() {
-  const res = await fetch("https://api.themoviedb.org/3/tv/popular?language=en-US&page=2", { headers: TMDB_HEADERS });
+  const res = await fetch("https://api.themoviedb.org/3/tv/popular?language=en-US&page=3", { headers: TMDB_HEADERS });
   if (!res.ok) {
     console.log("Request failed:", res.status, res.statusText);
     return;
@@ -91,9 +91,20 @@ async function run() {
     });
   }
 
-  const sql = rows.map(r =>
-    `INSERT INTO public.shows (name, img_vertical, description, seasons, ongoing, age_rating, release_year, "cast", crew, streaming_sites) VALUES (${toSqlValue(r.name)}, ${toSqlValue(r.img_vertical)}, ${toSqlValue(r.description)}, ${toSqlValue(r.seasons)}, ${toSqlValue(r.ongoing)}, ${toSqlValue(r.age_rating)}, ${toSqlValue(r.release_year)}, '${String(JSON.stringify(r.cast)).replace(/'/g, "''")}', '${String(JSON.stringify(r.crew)).replace(/'/g, "''")}', '${String(JSON.stringify(r.streaming)).replace(/'/g, "''")}');`
-  ).join("\n");
+const sql = `INSERT INTO public.shows (name, img_vertical, description, seasons, ongoing, age_rating, release_year, "cast", crew, streaming_sites) VALUES\n` +
+    rows.map(r =>
+      `(${toSqlValue(r.name)}, ${toSqlValue(r.img_vertical)}, ${toSqlValue(r.description)}, ${toSqlValue(r.seasons)}, ${toSqlValue(r.ongoing)}, ${toSqlValue(r.age_rating)}, ${toSqlValue(r.release_year)}, '${String(JSON.stringify(r.cast)).replace(/'/g, "''")}', '${String(JSON.stringify(r.crew)).replace(/'/g, "''")}', '${String(JSON.stringify(r.streaming)).replace(/'/g, "''")}')`
+    ).join(",\n") +
+    `\nON CONFLICT (name) DO UPDATE SET
+  img_vertical = EXCLUDED.img_vertical,
+  description = EXCLUDED.description,
+  seasons = EXCLUDED.seasons,
+  ongoing = EXCLUDED.ongoing,
+  age_rating = EXCLUDED.age_rating,
+  release_year = EXCLUDED.release_year,
+  "cast" = EXCLUDED."cast",
+  crew = EXCLUDED.crew,
+  streaming_sites = EXCLUDED.streaming_sites;`;
 
   console.log(sql);
 }

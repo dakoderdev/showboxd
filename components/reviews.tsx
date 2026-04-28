@@ -3,8 +3,7 @@ import Link from "next/link";
 import { MessageSquare, Heart } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
-
-const DEFAULT_PROFILE_PICTURE = `${(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").replace(/\/$/, "")}/storage/v1/object/public/users/def.webp`;
+import { DEFAULT_PROFILE_PICTURE } from "@/utils/constants";
 
 function StarDisplay({ rating }: { rating: number }) {
   return (
@@ -33,11 +32,7 @@ function StarDisplay({ rating }: { rating: number }) {
 export default async function Reviews({ showId }: { showId: number }) {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
-  const { data: reviews } = await supabase
-    .from("reviews")
-    .select("id, rating, comment, users(username, profile_picture)")
-    .eq("show_id", showId)
-    .limit(2);
+  const { data: reviews } = await supabase.from("reviews").select("id, rating, comment, users(username, profile_picture)").eq("show_id", showId).limit(2);
 
   return (
     <div>
@@ -46,35 +41,42 @@ export default async function Reviews({ showId }: { showId: number }) {
         <button className="bg-neutral-900/70 border border-white/10 text-sm rounded-full py-1 px-4 font-inter text-white/80">See More</button>
       </div>
       <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-2">
-        {reviews?.filter(r => r.comment).map((review) => {
-          const user = Array.isArray(review.users) ? review.users[0] : review.users;
-          return (
-            <Link key={review.id} href={"#"} className="flex flex-col border border-white/10 bg-neutral-900/20 hover:bg-neutral-900/30 rounded-2xl w-full min-h-54 shadow-sm p-4 shadow-black/80 transition-colors">
-              <div className="flex gap-4 items-center justify-between border-b border-white/5 pb-3 mb-2.5">
-                <div className="flex gap-3.5 items-center">
-                  <div className="w-8 h-8">
-                    <Image src={user?.profile_picture ?? DEFAULT_PROFILE_PICTURE} alt="User Avatar" width={32} height={32} className="rounded-full w-full h-full object-cover" />
+        {(() => {
+          const filteredReviews = reviews?.filter((r) => r.comment) || [];
+          return filteredReviews.length > 0 ? (
+            filteredReviews.map((review) => {
+              const user = Array.isArray(review.users) ? review.users[0] : review.users;
+              return (
+                <Link key={review.id} href={`/shows/${showId}/reviews/${review.id}`} className="flex flex-col border border-white/10 bg-neutral-900/20 hover:bg-neutral-900/30 rounded-2xl w-full min-h-54 shadow-sm p-4 shadow-black/80 transition-colors">
+                  <div className="flex gap-4 items-center justify-between border-b border-white/5 pb-3 mb-2.5">
+                    <div className="flex gap-3.5 items-center">
+                      <div className="w-8 h-8">
+                        <Image src={user?.profile_picture ?? DEFAULT_PROFILE_PICTURE} alt="User Avatar" width={32} height={32} sizes="32px" className="rounded-full w-full h-full object-cover" />
+                      </div>
+                      <div className="font-medium text-white/80">@{user?.username}</div>
+                    </div>
+                    <StarDisplay rating={review.rating} />
                   </div>
-                  <div className="font-medium text-white/80">@{user?.username}</div>
-                </div>
-                <StarDisplay rating={review.rating} />
-              </div>
-              <div className="flex flex-col justify-between grow">
-                <p className="text-white/70 pb-4">{review.comment}</p>
-                <div className="flex self-end gap-2">
-                  <span className="flex gap-1 items-center px-0.5 text-white/50 hover:text-white/80 transition-colors">
-                    <MessageSquare size={14} />
-                    <span className="text-sm">0</span>
-                  </span>
-                  <span className="flex gap-1 items-center px-0.5 text-white/50 hover:text-white/80 transition-colors">
-                    <Heart size={14} />
-                    <span className="text-sm">0</span>
-                  </span>
-                </div>
-              </div>
-            </Link>
+                  <div className="flex flex-col justify-between grow">
+                    <p className="text-white/70 pb-4">{review.comment}</p>
+                    <div className="flex self-end gap-2">
+                      <span className="flex gap-1 items-center px-0.5 text-white/50 hover:text-white/80 transition-colors">
+                        <MessageSquare size={14} />
+                        <span className="text-sm">0</span>
+                      </span>
+                      <span className="flex gap-1 items-center px-0.5 text-white/50 hover:text-white/80 transition-colors">
+                        <Heart size={14} />
+                        <span className="text-sm">0</span>
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })
+          ) : (
+            <div className="text-center text-white/70 py-8">No reviews yet.</div>
           );
-        })}
+        })()}
       </div>
     </div>
   );

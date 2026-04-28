@@ -36,8 +36,9 @@ export function ShowListAll({ shows, timeframe = "this week" }: ShowListProps) {
           >
             <Image
               src={show.img_vertical}
-              width={170}
-              height={255}
+              width={184}
+              height={272}
+              sizes="184px"
               alt={show.name}
               className="object-cover w-full h-full"
             />
@@ -166,7 +167,7 @@ export default async function Page({ searchParams }: PageProps) {
   }
 
   return (
-    <section className="flex justify-center items-center gap-4 w-full px-0 py-4 sm:px-12 md:px-17">
+    <section className="flex justify-center items-center gap-4 w-full py-4 sm:px-12 md:px-17">
       <ShowListAll shows={result} timeframe={filters.popular ?? "this week"} />
     </section>
   );

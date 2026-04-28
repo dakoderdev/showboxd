@@ -45,7 +45,7 @@ export default function ShowsBrowseFilters() {
 
       {/* Filters row */}
       <div className="flex flex-wrap items-center gap-3 px-2">
-        <span className="text-sm text-white/60">Filters:</span>
+        <span className="text-sm text-white/60 hidden sm:inline-block">Filters:</span>
 
         <select className="px-3 py-1.5 text-sm rounded-full bg-neutral-900/60 backdrop-blur-sm border border-white/10 text-white/80 focus:outline-none focus:border-white/25 transition-colors" value={year} onChange={(e) => setYear(e.target.value)}>
           <option value="">Year</option>

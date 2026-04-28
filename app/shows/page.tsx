@@ -18,7 +18,7 @@ export default async function Page() {
 
   return (
     <>
-      <section className="flex justify-center items-center gap-4 w-full px-0 bg-linear-to-b from-transparent from-30% to-background py-4 sm:px-12  md:px-17">
+      <section className="flex justify-center items-center gap-4 w-full bg-linear-to-b from-transparent from-30% to-background py-4 px-4 sm:px-12  md:px-17">
         <RainbowGlow />
         <ShowsBrowseFilters />
       </section>

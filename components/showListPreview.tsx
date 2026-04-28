@@ -13,7 +13,7 @@ export default function ShowListPreview({ popularShows }: ShowListProps) {
         <div className="w-full grid grid-cols-2 sm:grid-cols-[repeat(auto-fill,minmax(256px,1fr))] gap-3">
           {popularShows?.map((show) => (
             <Link key={show.show_id} href={`/shows/${show.show_id}`} className="relative cursor-pointer w-full aspect-2/3 shadow-md shadow-black/30 rounded-2xl overflow-hidden before:inset-0 before:absolute before:pointer-events-none before:ring-2 before:ring-inset before:ring-white/10 before:rounded-2xl">
-              <Image priority src={show.img_vertical} width={256} height={384} alt={show.name} className="object-cover w-full h-full" />
+              <Image priority src={show.img_vertical} width={256} height={384} sizes="256px" alt={show.name} className="object-cover w-full h-full" />
             </Link>
           ))}
         </div>

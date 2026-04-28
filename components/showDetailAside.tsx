@@ -145,7 +145,7 @@ export default function ShowDetailAside({ showId, show, userChoices, userRating,
     <aside className="shrink-0 flex flex-col items-center md:items-stretch gap-3 sm:gap-2 pt-2">
       <MainButtons showId={showId} userChoices={userChoices} />
       <Ratings showId={String(showId)} userRating={userRating} />
-      <LogShowDialog open={logOpen} onClose={() => setLogOpen(false)} show={show} userChoices={userChoices} initialReview={initialReview} />
+      <LogShowDialog key={logOpen ? `${show.show_id}-open` : "closed"} open={logOpen} onClose={() => setLogOpen(false)} show={show} userChoices={userChoices} initialReview={initialReview} />
       <article className="bg-neutral-900/70 border border-white/10 shadow-sm shadow-black/80 p-2 rounded-2xl text-white/80 justify-center grid grid-cols-2 sm:flex w-full max-w-80 flex-col items-stretch">
         <button type="button" className="text-sm sm:text-xs hover:bg-neutral-200/10 py-3 px-3 sm:py-1 transition-colors rounded-lg text-center">
           Show your activity

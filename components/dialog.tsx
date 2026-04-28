@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
@@ -72,25 +72,24 @@ export default function LogShowDialog({ open, onClose, show, userChoices, initia
 
   const seasonCount = Math.min(Math.max(Number(show.seasons) || 1, 1), 24);
 
-  const [mode, setMode] = useState<"date" | "before">("date");
-  const [watchedDate, setWatchedDate] = useState(() => new Date().toISOString().split("T")[0]);
-  const [finished, setFinished] = useState(true);
-  const [seasons, setSeasons] = useState<boolean[]>(() => Array(seasonCount).fill(false));
-  const [rating, setRating] = useState(0);
-  const [liked, setLiked] = useState(false);
-  const [thoughts, setThoughts] = useState("");
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    if (!open) return;
-    setMode("date");
-    setWatchedDate(new Date().toISOString().split("T")[0]);
-    setFinished(true);
-    setSeasons(Array(seasonCount).fill(false));
-    setRating(initialReview?.rating ?? 0);
-    setLiked(!!userChoices.liked);
-    setThoughts(initialReview?.comment?.trim() ?? "");
-  }, [open, seasonCount, initialReview, userChoices.liked]);
+  // Use useMemo to compute initial state based on props
+  const initialFormState = useMemo(
+    () => ({
+      mode: "date" as "date" | "before",
+      watchedDate: new Date().toISOString().split("T")[0],
+      finished: true,
+      seasons: Array(seasonCount).fill(false),
+      rating: initialReview?.rating ?? 0,
+      liked: !!userChoices.liked,
+      thoughts: initialReview?.comment?.trim() ?? "",
+    }),
+    [seasonCount, initialReview?.rating, initialReview?.comment, userChoices.liked],
+  );
+
+  const [formState, setFormState] = useState(initialFormState);
+
 
   useEffect(() => {
     const el = dialogRef.current;
@@ -108,7 +107,10 @@ export default function LogShowDialog({ open, onClose, show, userChoices, initia
   }, [onClose]);
 
   const toggleSeason = (index: number) => {
-    setSeasons((prev) => prev.map((s, i) => (i === index ? !s : s)));
+    setFormState((prev) => ({
+      ...prev,
+      seasons: prev.seasons.map((s, i) => (i === index ? !s : s)),
+    }));
   };
 
   const requestClose = () => {
@@ -138,7 +140,7 @@ export default function LogShowDialog({ open, onClose, show, userChoices, initia
         show_id: showId,
         user_id: user.id,
         watched: true,
-        liked,
+        liked: formState.liked,
         saved: userChoices.saved,
       },
       { onConflict: "show_id,user_id" },
@@ -151,23 +153,19 @@ export default function LogShowDialog({ open, onClose, show, userChoices, initia
       return;
     }
 
-    const comment = thoughts.trim() || null;
+    const comment = formState.thoughts.trim() || null;
     const today = new Date().toISOString().split("T")[0];
 
-    if (rating > 0 || comment !== null) {
+    if (formState.rating > 0 || comment !== null) {
       console.log("attempting review upsert");
       const { error: reviewError } = await supabase.from("reviews").upsert(
         {
           show_id: showId,
           user_id: user.id,
-          rating: rating > 0 ? rating : 0,
+          rating: formState.rating > 0 ? formState.rating : 0,
           comment: comment,
-          watched_at: mode === "date" 
-          ? (watchedDate === today 
-            ? new Date().toISOString() 
-            : new Date(watchedDate).toISOString()) 
-          : null,
-          seasons_watched: finished ? Array.from({ length: seasonCount }, (_, i) => i + 1) : seasons.some(Boolean) ? seasons.map((s, i) => (s ? i + 1 : null)).filter((n): n is number => n !== null) : null,
+          watched_at: formState.mode === "date" ? (formState.watchedDate === today ? new Date().toISOString() : new Date(formState.watchedDate).toISOString()) : null,
+          seasons_watched: formState.finished ? Array.from({ length: seasonCount }, (_, i) => i + 1) : formState.seasons.some(Boolean) ? formState.seasons.map((s, i) => (s ? i + 1 : null)).filter((n): n is number => n !== null) : null,
         },
         { onConflict: "show_id,user_id" },
       );
@@ -204,23 +202,23 @@ export default function LogShowDialog({ open, onClose, show, userChoices, initia
         <form onSubmit={handleSave} className="flex flex-col gap-4 text-sm text-white/80 @container">
           <section className="flex flex-wrap gap-4 justify-between px-4 @lg:px-8">
             <label className="flex flex-wrap items-center gap-2">
-              <input type="radio" name="watch-mode" className="accent-blue-300" checked={mode === "date"} onChange={() => setMode("date")} />
+              <input type="radio" name="watch-mode" className="accent-blue-300" checked={formState.mode === "date"} onChange={() => setFormState((prev) => ({ ...prev, mode: "date" }))} />
               Watched on
-              <input type="date" value={watchedDate} onChange={(ev) => setWatchedDate(ev.target.value)} disabled={mode !== "date"} className="ml-2 bg-neutral-800 border border-white/10 rounded px-2 py-1 text-xs disabled:opacity-40" />
+              <input type="date" value={formState.watchedDate} onChange={(ev) => setFormState((prev) => ({ ...prev, watchedDate: ev.target.value }))} disabled={formState.mode !== "date"} className="ml-2 bg-neutral-800 border border-white/10 rounded px-2 py-1 text-xs disabled:opacity-40" />
             </label>
             <label className="flex items-center gap-2">
-              <input type="radio" name="watch-mode" className="accent-blue-300" checked={mode === "before"} onChange={() => setMode("before")} />
+              <input type="radio" name="watch-mode" className="accent-blue-300" checked={formState.mode === "before"} onChange={() => setFormState((prev) => ({ ...prev, mode: "before" }))} />
               I&apos;ve watched this before
             </label>
             <div className="flex flex-col @md:flex-row w-full gap-4">
               <label className="flex items-center gap-2">
-                <input type="checkbox" className="accent-blue-300" checked={finished} onChange={() => setFinished((prev) => !prev)} />I finished the show
+                <input type="checkbox" className="accent-blue-300" checked={formState.finished} onChange={() => setFormState((prev) => ({ ...prev, finished: !prev.finished }))} />I finished the show
               </label>
-              {!finished && (
+              {!formState.finished && (
                 <div className="flex flex-col grow gap-1">
                   <span className="text-xs text-white/60">Seasons watched:</span>
                   <div className="grid gap-2 grid-cols-[repeat(auto-fill,minmax(73px,1fr))]">
-                    {seasons.map((s, i) => (
+                    {formState.seasons.map((s, i) => (
                       <label key={i} className="flex items-center gap-2 text-xs">
                         <input type="checkbox" className="text-nowrap" checked={s} onChange={() => toggleSeason(i)} />
                         Season {i + 1}
@@ -231,12 +229,12 @@ export default function LogShowDialog({ open, onClose, show, userChoices, initia
               )}
             </div>
           </section>
-          <textarea value={thoughts} onChange={(ev) => setThoughts(ev.target.value)} placeholder="Write your thoughts…" className="min-h-[140px] resize-none bg-neutral-800 border border-white/10 rounded-lg p-2" />
+          <textarea value={formState.thoughts} onChange={(ev) => setFormState((prev) => ({ ...prev, thoughts: ev.target.value }))} placeholder="Write your thoughts…" className="min-h-[140px] resize-none bg-neutral-800 border border-white/10 rounded-lg p-2" />
           <section className="flex gap-3 items-center flex-wrap">
             <div className="flex-1 min-w-0 h-12 flex items-center justify-left gap-2">
-              <StarRating rating={rating} setRating={setRating} />
+              <StarRating rating={formState.rating} setRating={(rating) => setFormState((prev) => ({ ...prev, rating }))} />
             </div>
-            <LikeButton liked={liked} setLiked={setLiked} />
+            <LikeButton liked={formState.liked} setLiked={(liked) => setFormState((prev) => ({ ...prev, liked }))} />
             <button type="submit" disabled={saving} className="relative w-24 py-3 px-2 bg-gray-200 text-black font-medium hover:bg-white cursor-pointer transition-colors overflow-hidden rounded-full flex items-center justify-center z-2 save disabled:opacity-50 disabled:cursor-not-allowed">
               {saving ? "…" : "Save"}
             </button>
@@ -244,7 +242,7 @@ export default function LogShowDialog({ open, onClose, show, userChoices, initia
         </form>
       </div>
       <figure className="relative hidden lg:block w-fit h-fit -ml-6 before:inset-0 before:absolute -translate-x-1/8 rotate-3 before:ring-2 before:ring-inset before:ring-white/10 before:rounded-xl shadow-md shadow-black/30">
-        <Image className="rounded-xl object-cover" src={show.img_vertical} alt={show.name} width={200} height={300} />
+        <Image className="rounded-xl object-cover" src={show.img_vertical} alt={show.name} width={200} height={300} sizes="200px" />
       </figure>
     </dialog>
   );
