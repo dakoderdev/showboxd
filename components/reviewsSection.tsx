@@ -27,26 +27,24 @@ function StarDisplay({ rating }: { rating: number }) {
   );
 }
 
-type Review = {
+type ReviewRaw = {
   id: number;
-  rating: number;
-  comment: string;
-  users: {
-    username: string;
-    profile_picture: string | null;
-  };
-  shows: {
-    name: string;
-  };
   show_id: number;
+  rating: number;
+  comment: string | null;
+  users: { username: string; profile_picture: string | null } | { username: string; profile_picture: string | null }[] | null;
+  shows: { name: string } | { name: string }[] | null;
 };
 
-export function Review({ review }: { review: Review }) {
-  const user = review.users || { username: "Unknown User", profile_picture: null };
-  const show = review.shows || { name: "Unknown Show" };
-  console.log("Current user object:", user);
-  console.log(user?.profile_picture);
-  
+type ReviewItem = ReviewRaw;
+
+function firstRelation<T>(value: T | T[] | null): T | null {
+  return Array.isArray(value) ? (value[0] ?? null) : value;
+}
+
+export function ReviewCard({ review }: { review: ReviewItem }) {
+  const user = firstRelation(review.users) ?? { username: "Unknown User", profile_picture: null };
+  const show = firstRelation(review.shows) ?? { name: "Unknown Show" };
 
   return (
     <Link key={review.id} href={`/shows/${review.show_id}`} className="flex flex-col border max-w-sm border-white/10 bg-neutral-900/20 hover:bg-neutral-900/30 rounded-2xl w-full min-h-54 shadow-sm p-4 shadow-black/80 transition-colors">
@@ -67,8 +65,7 @@ export function Review({ review }: { review: Review }) {
   );
 }
 
-export default async function ReviewSection({ reviews }: { reviews: Review[] }) {
-  console.log("BB " + reviews )
+export default function ReviewSection({ reviews }: { reviews: ReviewItem[] }) {
   return (
     <section className="relative z-30 w-full py-16 overflow-hidden flex flex-col bg-background">
       <h2 className="text-6xl tracking-tighter opacity-90 font-semibold text-center pb-8">
@@ -81,7 +78,7 @@ export default async function ReviewSection({ reviews }: { reviews: Review[] }) 
             ?.filter((r) => r.comment)
             .slice(0, 3)
             .map((review) => {
-              return <Review key={review.id} review={review as unknown as Review} />;
+              return <ReviewCard key={review.id} review={review} />;
             })}
         </div>
       </div>
