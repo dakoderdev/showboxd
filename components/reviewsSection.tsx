@@ -31,20 +31,19 @@ type Review = {
   id: number;
   rating: number;
   comment: string;
-  // Change these to arrays
   users: {
     username: string;
     profile_picture: string | null;
-  }[]; 
+  };
   shows: {
     name: string;
-  }[];
+  };
   show_id: number;
 };
 
 export function Review({ review }: { review: Review }) {
-  const user = review.users[0];
-  const show = review.shows[0];
+  const user = review.users || { username: "Unknown User", profile_picture: null };
+  const show = review.shows || { name: "Unknown Show" };
   console.log("Current user object:", user);
   console.log(user?.profile_picture);
   

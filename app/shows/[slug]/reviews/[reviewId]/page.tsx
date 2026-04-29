@@ -5,12 +5,6 @@ import { DEFAULT_PROFILE_PICTURE } from "@/utils/constants";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 
-const mockUser = {
-  username: "cinephile_alex",
-  profile_picture: DEFAULT_PROFILE_PICTURE,
-};
-
-// Hardcoded comments
 const mockComments = [
   {
     id: 1,
