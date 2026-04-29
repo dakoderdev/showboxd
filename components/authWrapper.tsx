@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function AuthWrapper({children,}: {children: React.ReactNode}) {
     return(
-        <section className="absolute top-0 grid md:grid-cols-2 w-full h-dvh">
+        <section className="relative top-0 -mt-14 grid md:grid-cols-2 w-full h-dvh">
             <div className="flex justify-center items-center w-full px-8 py-16">
                 {children}
             </div>
