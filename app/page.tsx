@@ -1,6 +1,4 @@
-import { createClient } from "@/utils/supabase/server";
-import { cookies } from "next/headers";
-import { cache } from "react";
+import { getShows, getTop10Shows, getReviews } from "@/utils/supabase/queries";
 import ShowListTop10 from "../components/showListTop10";
 import HeroSection from "./sections/heroSection";
 import SponsorSection from "./sections/sponsorSection";
@@ -20,42 +18,12 @@ const shuffleAndSlice = <T,>(array: T[], amount: number): T[] => {
   return shuffled.slice(0, amount);
 };
 
-// Cache the data fetching functions
-const getHeroPool = cache(async () => {
-  const cookieStore = await cookies();
-  const supabase = createClient(cookieStore);
-  const { data } = await supabase.from("shows").select("show_id, img_vertical").limit(HERO_RANDOM_POOL);
-  return data || [];
-});
-
-const getTop10Data = cache(async () => {
-  const cookieStore = await cookies();
-  const supabase = createClient(cookieStore);
-  const { data } = await supabase
-    .from("most_watched_shows")
-    .select(
-      `
-    show_id,
-    watch_count,
-    shows!inner (
-      name,
-      img_vertical
-    )
-  `,
-    )
-    .limit(10);
-  return data || [];
-});
-
-const getReviews = cache(async () => {
-  const cookieStore = await cookies();
-  const supabase = createClient(cookieStore);
-  const { data } = await supabase.from("reviews").select("id, show_id, rating, comment, users(username, profile_picture), shows(name)").filter("comment", "not.is", null).limit(3);
-  return data || [];
-});
-
 export default async function Page() {
-  const [heroPool, top10Data, reviews] = await Promise.all([getHeroPool(), getTop10Data(), getReviews()]);
+  const [heroPool, top10Data, reviews] = await Promise.all([
+    getShows(HERO_RANDOM_POOL),
+    getTop10Shows(),
+    getReviews({ isComment: true, limit: 3 })
+  ]);
 
   const randomShows = shuffleAndSlice(heroPool, 3);
 

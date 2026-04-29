@@ -4,6 +4,7 @@ import Image from "next/image";
 import ShowDetailAside from "../../../components/showDetailAside";
 import Tab from "../../../components/tab";
 import Reviews from "../../../components/reviews";
+import { getShowById } from "@/utils/supabase/queries";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -11,12 +12,8 @@ type PageProps = {
 
 export async function generateMetadata({ params }: PageProps) {
   const { slug } = await params;
-
-  const cookieStore = await cookies();
-  const supabase = createClient(cookieStore);
-
-  const { data: show } = await supabase.from("shows").select("name").eq("show_id", slug).single();
-
+  const { data: show } = await getShowById({ id: parseInt(slug), returnType: "title" });
+  
   return {
     title: show?.name || "Show",
   };
@@ -42,13 +39,11 @@ export default async function Page({ params }: PageProps) {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
 
-  // 1. Get the current user
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // 2. Fetch Show Data
-  const { data: show } = await supabase.from("shows").select("*").eq("show_id", slug).single();
+  const { data: show } = await getShowById({ id: parseInt(slug) });
   if (!show) return <div>Show not found</div>;
 
   const [savedRes, watchedRes, likedRes, userInteraction, userReview, usersRating] = await Promise.all([

@@ -31,18 +31,20 @@ type Review = {
   id: number;
   rating: number;
   comment: string;
+  // Change these to arrays
   users: {
     username: string;
     profile_picture: string | null;
-  };
+  }[]; 
   shows: {
     name: string;
-  };
+  }[];
   show_id: number;
 };
 
 export function Review({ review }: { review: Review }) {
-  const user = review.users;
+  const user = review.users[0];
+  const show = review.shows[0];
   console.log("Current user object:", user);
   console.log(user?.profile_picture);
   
@@ -60,7 +62,7 @@ export function Review({ review }: { review: Review }) {
       </div>
       <div className="flex flex-col justify-between grow">
         <p className="text-white/70 pb-4 text-base ">{review.comment}</p>
-        <span className="flex w-full justify-center gap-2 text-white/40 text-sm italic">- {review.shows.name} -</span>
+        <span className="flex w-full justify-center gap-2 text-white/40 text-sm italic">- {show.name} -</span>
       </div>
     </Link>
   );

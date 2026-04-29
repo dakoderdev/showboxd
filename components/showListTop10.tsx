@@ -53,8 +53,6 @@ export default function ShowListTop10({ bestShows }: ShowListProps) {
             </div>
           ))}
         </div>
-
-        {/* Desktop: paginated slider */}
         <div className="relative hidden sm:block">
           <button onClick={() => setCurrentGroup((g) => Math.max(0, g - 1))} disabled={currentGroup === 0} className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 z-10 w-12 h-12 flex items-center justify-center rounded-full bg-black/60 backdrop-blur-sm shadow-sm text-white disabled:opacity-0 hover:bg-black/80 transition-colors text-2xl" aria-label="Previous">
             <svg className="w-7 h-7" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

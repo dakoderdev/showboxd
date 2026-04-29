@@ -42,8 +42,6 @@ export default function ShowsBrowseFilters() {
           Search
         </button>
       </div>
-
-      {/* Filters row */}
       <div className="flex flex-wrap items-center gap-3 px-2">
         <span className="text-sm text-white/60 hidden sm:inline-block">Filters:</span>
 
