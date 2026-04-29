@@ -66,7 +66,21 @@ type UserChoices = { saved: boolean; watched: boolean; liked: boolean };
 
 type InitialReview = { rating: number | null; comment: string | null } | null;
 
-export default function LogShowDialog({ open, onClose, show, userChoices, initialReview }: { open: boolean; onClose: () => void; show: ShowLogSummary; userChoices: UserChoices; initialReview: InitialReview }) {
+export default function LogShowDialog({
+  open,
+  onClose,
+  show,
+  userChoices,
+  initialReview,
+  onSaved,
+}: {
+  open: boolean;
+  onClose: () => void;
+  show: ShowLogSummary;
+  userChoices: UserChoices;
+  initialReview: InitialReview;
+  onSaved?: (userChoices: UserChoices) => void;
+}) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const router = useRouter();
 
@@ -89,7 +103,6 @@ export default function LogShowDialog({ open, onClose, show, userChoices, initia
   );
 
   const [formState, setFormState] = useState(initialFormState);
-
 
   useEffect(() => {
     const el = dialogRef.current;
@@ -134,14 +147,19 @@ export default function LogShowDialog({ open, onClose, show, userChoices, initia
     }
 
     const showId = show.show_id;
+    const nextUserChoices = {
+      saved: userChoices.saved,
+      watched: true,
+      liked: formState.liked,
+    };
 
     const { error: interactionError } = await supabase.from("show_interaction").upsert(
       {
         show_id: showId,
         user_id: user.id,
-        watched: true,
-        liked: formState.liked,
-        saved: userChoices.saved,
+        saved: nextUserChoices.saved,
+        watched: nextUserChoices.watched,
+        liked: nextUserChoices.liked,
       },
       { onConflict: "show_id,user_id" },
     );
@@ -157,7 +175,6 @@ export default function LogShowDialog({ open, onClose, show, userChoices, initia
     const today = new Date().toISOString().split("T")[0];
 
     if (formState.rating > 0 || comment !== null) {
-      console.log("attempting review upsert");
       const { error: reviewError } = await supabase.from("reviews").upsert(
         {
           show_id: showId,
@@ -169,7 +186,6 @@ export default function LogShowDialog({ open, onClose, show, userChoices, initia
         },
         { onConflict: "show_id,user_id" },
       );
-      console.log("review result:", reviewError);
 
       if (reviewError) {
         console.error("Supabase error:", reviewError.message);
@@ -179,6 +195,7 @@ export default function LogShowDialog({ open, onClose, show, userChoices, initia
       }
     }
 
+    onSaved?.(nextUserChoices);
     setSaving(false);
     router.refresh();
     requestClose();

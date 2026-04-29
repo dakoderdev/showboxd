@@ -22,7 +22,7 @@ export default async function Page() {
   const [heroPool, top10Data, reviews] = await Promise.all([
     getShows(HERO_RANDOM_POOL),
     getTop10Shows(),
-    getReviews({ isComment: true, limit: 3 })
+    getReviews({ isComment: true, limit: 3, uniquePerUser: true })
   ]);
 
   const randomShows = shuffleAndSlice(heroPool, 3);

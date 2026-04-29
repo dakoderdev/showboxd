@@ -75,20 +75,27 @@ export const getTop10Shows = cache(async () => {
 type getReview = {
   isComment: boolean;
   limit: number;
-}
+  uniquePerUser?: boolean;
+};
 
-
-export const getReviews = cache(async ({isComment, limit} : getReview) => {
+export const getReviews = cache(async ({ isComment, limit, uniquePerUser = false }: getReview) => {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
 
-  const { data } = isComment ? await supabase.from("reviews")
-  .select("id, show_id, rating, comment, users(username, profile_picture), shows(name)")
-  .filter("comment", "not.is", null)
-  .limit(limit):
-  await supabase.from("reviews")
-  .select("id, show_id, rating, comment, users(username, profile_picture), shows(name)")
-  .limit(limit);
+  const query = supabase
+    .from("reviews")
+    .select("id, show_id, user_id, rating, comment, users(username, profile_picture), shows(name)")
+    .order("created_at", { ascending: false })
+    .limit(uniquePerUser ? limit * 4 : limit);
 
-  return data || [];
+  const { data } = isComment ? await query.filter("comment", "not.is", null) : await query;
+
+  if (!data || !uniquePerUser) return data || [];
+
+  const seenUserIds = new Set<string>();
+  return data.filter((review) => {
+    if (seenUserIds.has(review.user_id)) return false;
+    seenUserIds.add(review.user_id);
+    return true;
+  }).slice(0, limit);
 });

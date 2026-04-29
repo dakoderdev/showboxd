@@ -38,7 +38,9 @@ export default async function Reviews({ showId }: { showId: number }) {
     <div>
       <div className="flex justify-between items-end pb-3 mb-2 border-b border-white/10">
         <h3 className="text-3xl font-medium text-white/80">Reviews</h3>
-        <button className="bg-neutral-900/70 border border-white/10 text-sm rounded-full py-1 px-4 font-inter text-white/80">See More</button>
+        <Link href={`/shows/${showId}/reviews`} className="bg-neutral-900/70 border border-white/10 text-sm rounded-full py-1 px-4 font-inter text-white/80 hover:bg-neutral-800/80 transition-colors">
+          See More
+        </Link>
       </div>
       <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-2">
         {(() => {

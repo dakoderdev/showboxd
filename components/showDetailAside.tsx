@@ -4,19 +4,36 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import LogShowDialog, { type ShowLogSummary } from "./dialog";
 
-export function MainButtons({ showId, userChoices }: { showId: string | number; userChoices: { saved: boolean; watched: boolean; liked: boolean } }) {
-  const [choices, setChoices] = useState(userChoices || { saved: false, watched: false, liked: false });
+type UserChoices = { saved: boolean; watched: boolean; liked: boolean };
+
+function sameUserChoices(left: UserChoices, right: UserChoices) {
+  return left.saved === right.saved && left.watched === right.watched && left.liked === right.liked;
+}
+
+export function MainButtons({
+  showId,
+  choices,
+  setChoices,
+}: {
+  showId: string | number;
+  choices: UserChoices;
+  setChoices: (update: UserChoices | ((previous: UserChoices) => UserChoices)) => void;
+}) {
+  const [pending, setPending] = useState<keyof UserChoices | null>(null);
   const router = useRouter();
   const supabase = createClient();
 
   const handleToggle = async (label: string) => {
+    if (pending) return;
     const column = label.toLowerCase() === "save" ? "saved" : label.toLowerCase() === "watched" ? "watched" : "liked";
 
-    const key = column as keyof typeof choices;
+    const key = column as keyof UserChoices;
     const oldValue = choices[key];
     const newValue = !oldValue;
+    const nextChoices = { ...choices, [key]: newValue };
 
-    setChoices((prev) => ({ ...prev, [key]: newValue }));
+    setPending(key);
+    setChoices(nextChoices);
 
     const {
       data: { user },
@@ -25,6 +42,7 @@ export function MainButtons({ showId, userChoices }: { showId: string | number; 
     if (!user) {
       alert("Log in to track your shows!");
       setChoices((prev) => ({ ...prev, [key]: oldValue }));
+      setPending(null);
       return;
     }
 
@@ -32,7 +50,9 @@ export function MainButtons({ showId, userChoices }: { showId: string | number; 
       {
         show_id: showId,
         user_id: user.id,
-        [column]: newValue,
+        saved: nextChoices.saved,
+        watched: nextChoices.watched,
+        liked: nextChoices.liked,
       },
       { onConflict: "show_id,user_id" },
     );
@@ -43,6 +63,7 @@ export function MainButtons({ showId, userChoices }: { showId: string | number; 
     } else {
       router.refresh();
     }
+    setPending(null);
   };
 
   return (
@@ -56,6 +77,7 @@ export function MainButtons({ showId, userChoices }: { showId: string | number; 
           <button
             key={index}
             onClick={() => handleToggle(label)}
+            disabled={pending !== null}
             className={`group flex flex-col w-12 gap-0.5 items-center justify-center cursor-pointer transition-colors
               ${isSelected ? "text-blue-300" : "text-white/10"}`}
           >
@@ -77,10 +99,31 @@ export function Ratings({ showId, userRating }: { showId: string; userRating: nu
   const router = useRouter();
   const supabase = createClient();
 
-  const [rating, setRating] = useState(userRating || 0);
+  const currentServerRating = userRating || 0;
+  const [ratingState, setRatingState] = useState({
+    value: currentServerRating,
+    serverValue: currentServerRating,
+  });
+  const [pending, setPending] = useState(false);
+  let rating = ratingState.value;
+
+  if (ratingState.serverValue !== currentServerRating) {
+    rating = currentServerRating;
+    setRatingState({
+      value: currentServerRating,
+      serverValue: currentServerRating,
+    });
+  }
+
+  const setRating = (value: number) => {
+    setRatingState((previous) => ({ ...previous, value }));
+  };
+
   const handleStarClick = (index: number, half: number) => async () => {
+    if (pending) return;
     const newRating = index * 2 + half;
     const previousRating = rating;
+    setPending(true);
     setRating(newRating);
 
     const {
@@ -90,6 +133,7 @@ export function Ratings({ showId, userRating }: { showId: string; userRating: nu
     if (!user) {
       alert("Log in to rate shows!");
       setRating(previousRating);
+      setPending(false);
       return;
     }
 
@@ -108,6 +152,7 @@ export function Ratings({ showId, userRating }: { showId: string; userRating: nu
     } else {
       router.refresh();
     }
+    setPending(false);
   };
   return (
     <article className="bg-neutral-900/70 border border-white/10 shadow-sm shadow-black/80 p-4 rounded-2xl text-white/80 justify-center gap-2 flex w-full max-w-80 items-center">
@@ -128,8 +173,8 @@ export function Ratings({ showId, userRating }: { showId: string; userRating: nu
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                 <path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" />
               </svg>
-              <button onClick={handleStarClick(index, 1)} className="absolute inset-y-0 left-0 w-1/2 cursor-pointer" />
-              <button onClick={handleStarClick(index, 2)} className="absolute inset-y-0 right-0 w-1/2 cursor-pointer" />
+              <button onClick={handleStarClick(index, 1)} disabled={pending} className="absolute inset-y-0 left-0 w-1/2 cursor-pointer disabled:cursor-wait" />
+              <button onClick={handleStarClick(index, 2)} disabled={pending} className="absolute inset-y-0 right-0 w-1/2 cursor-pointer disabled:cursor-wait" />
             </div>
           );
         })}
@@ -140,12 +185,32 @@ export function Ratings({ showId, userRating }: { showId: string; userRating: nu
 
 export default function ShowDetailAside({ showId, show, userChoices, userRating, initialReview }: { showId: string | number; show: ShowLogSummary; userChoices: { saved: boolean; watched: boolean; liked: boolean }; userRating: number | null; initialReview: { rating: number | null; comment: string | null } | null }) {
   const [logOpen, setLogOpen] = useState(false);
+  const [choicesState, setChoicesState] = useState({
+    value: userChoices,
+    serverValue: userChoices,
+  });
+  let choices = choicesState.value;
+
+  if (!sameUserChoices(choicesState.serverValue, userChoices)) {
+    choices = userChoices;
+    setChoicesState({
+      value: userChoices,
+      serverValue: userChoices,
+    });
+  }
+
+  const setChoices = (update: UserChoices | ((previous: UserChoices) => UserChoices)) => {
+    setChoicesState((previous) => ({
+      ...previous,
+      value: typeof update === "function" ? update(previous.value) : update,
+    }));
+  };
 
   return (
     <aside className="shrink-0 flex flex-col items-center md:items-stretch gap-3 sm:gap-2 pt-2">
-      <MainButtons showId={showId} userChoices={userChoices} />
+      <MainButtons showId={showId} choices={choices} setChoices={setChoices} />
       <Ratings showId={String(showId)} userRating={userRating} />
-      <LogShowDialog key={logOpen ? `${show.show_id}-open` : "closed"} open={logOpen} onClose={() => setLogOpen(false)} show={show} userChoices={userChoices} initialReview={initialReview} />
+      <LogShowDialog key={logOpen ? `${show.show_id}-open` : "closed"} open={logOpen} onClose={() => setLogOpen(false)} show={show} userChoices={choices} initialReview={initialReview} onSaved={(nextChoices) => setChoices(nextChoices)} />
       <article className="bg-neutral-900/70 border border-white/10 shadow-sm shadow-black/80 p-2 rounded-2xl text-white/80 justify-center grid grid-cols-2 sm:flex w-full max-w-80 flex-col items-stretch">
         <button type="button" className="text-sm sm:text-xs hover:bg-neutral-200/10 py-3 px-3 sm:py-1 transition-colors rounded-lg text-center">
           Show your activity
