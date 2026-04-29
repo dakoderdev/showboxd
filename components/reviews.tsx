@@ -32,7 +32,7 @@ function StarDisplay({ rating }: { rating: number }) {
 export default async function Reviews({ showId }: { showId: number }) {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
-  const { data: reviews } = await supabase.from("reviews").select("id, rating, comment, users(username, profile_picture)").eq("show_id", showId).limit(2);
+  const { data: reviews } = await supabase.from("reviews").select("id, rating, comment, users(username, profile_picture)").eq("show_id", showId).limit(4).order("created_at", { ascending: false });
 
   return (
     <div>
