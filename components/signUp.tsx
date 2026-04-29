@@ -37,7 +37,7 @@ export default function SignUp() {
     return (
       <div className="flex items-center justify-center">
         <div className="border border-white/10 rounded-2xl p-10 flex flex-col items-center gap-3 max-w-xs w-full text-center">
-          <p className="text-white text-sm">Check your email to confirm your account.</p>
+          <p className="text-white text-sm">You&apos;re logged in!</p>
           <p className="text-white/40 text-xs">{email}</p>
         </div>
       </div>
